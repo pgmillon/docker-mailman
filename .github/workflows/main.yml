@@ -2,13 +2,11 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ custom ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,7 +20,48 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Chronicler Action
-        # You may pin to the exact commit or the version.
-        # uses: crosscompile/chronicler-action@5c25dbce26b0789724a92902c69217b46f023b51
-        uses: crosscompile/chronicler-action@v1.0.1
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          registry: rg.fr-par.scw.cloud/ishtanzar.net-prod
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push Core
+        uses: docker/build-push-action@v2
+        with:
+          context: ./core
+          file: ./core/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: rg.fr-par.scw.cloud/ishtanzar.net-prod/mailman-core:0.4.1-pgmillon
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and push Web
+        uses: docker/build-push-action@v2
+        with:
+          context: ./web
+          file: ./web/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: rg.fr-par.scw.cloud/ishtanzar.net-prod/mailman-web:0.4.1-pgmillon
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+    
