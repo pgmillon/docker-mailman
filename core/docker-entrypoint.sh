@@ -182,16 +182,16 @@ fi
 
 rm -f /tmp/{postfix,exim}-mailman.cfg
 
-if [[ -e /opt/mailman/mailman-extra.cfg ]]
+if [[ -e /opt/mailman-extra.cfg ]]
 then
-	echo "Found configuration file at /opt/mailman/mailman-extra.cfg"
-	cat /opt/mailman/mailman-extra.cfg >> /etc/mailman.cfg
+	echo "Found configuration file at /opt/mailman-extra.cfg"
+	cat /opt/mailman-extra.cfg >> /etc/mailman.cfg
 fi
 
-if [[ -e /opt/mailman/gunicorn-extra.cfg ]]
+if [[ -e /opt/gunicorn-extra.cfg ]]
 then
-       echo "Found [webserver] configuration file at /opt/mailman/gunicorn-extra.cfg"
-       cat /opt/mailman/gunicorn-extra.cfg > /etc/gunicorn.cfg
+       echo "Found [webserver] configuration file at /opt/gunicorn-extra.cfg"
+       cat /opt/gunicorn-extra.cfg > /etc/gunicorn.cfg
 fi
 
 if [[ -v HYPERKITTY_API_KEY ]]; then
