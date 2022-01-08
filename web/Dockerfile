@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/root/.cache \
 		django-utils-six \
 	&& apk del .build-deps \
 	&& addgroup -S mailman \
-	&& adduser -S -G mailman mailman \
+	&& adduser -S -G mailman -G tty mailman \
 	&& chown -R mailman /opt/mailman-web/ \
 	&& chmod u+x /opt/mailman-web/manage.py
 

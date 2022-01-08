@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.cache \
         git+https://gitlab.com/mailman/mailman-hyperkitty@${MM3_HK_REF} \
         gunicorn==19.9.0 \
     && apk del build-deps \
-    && adduser -S mailman
+    && adduser -S mailman -G tty
 
 # Change the working directory.
 WORKDIR /opt/mailman

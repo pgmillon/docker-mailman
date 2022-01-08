@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/root/.cache \
                    pymysql \
                    'sqlalchemy<1.4.0' \
     && apk del build-deps \
-    && adduser -S mailman
+    && adduser -S mailman -G tty
 
 # Change the working directory.
 WORKDIR /opt/mailman
